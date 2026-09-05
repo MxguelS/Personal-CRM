@@ -29,8 +29,8 @@
           "conditions": [
             {
               "id": "6f065412-3caf-4dc7-b592-46cb66fd0ff8",
-              "leftValue": "",
-              "rightValue": "",
+              "leftValue": "={{$json.body.status}}",
+              "rightValue": "waiting",
               "operator": {
                 "type": "string",
                 "operation": "equals",
