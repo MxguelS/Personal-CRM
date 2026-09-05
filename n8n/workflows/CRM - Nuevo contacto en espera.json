@@ -1,0 +1,125 @@
+{
+  "name": "CRM - Nuevo contacto en espera",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crm-contacto-espera",
+        "options": {}
+      },
+      "id": "3715e3d9-368b-4c96-991b-3c72ffa0db38",
+      "name": "Webhook contacto en espera",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        272
+      ],
+      "webhookId": "crm-contacto-espera"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6f065412-3caf-4dc7-b592-46cb66fd0ff8",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0d6db1d4-6c1f-4ca1-956f-d89b8c3fab9f",
+      "name": "¿Está en espera?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "DISCORD_WEBHOOK_URL",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=={{\n  \"🆕 **Nuevo contacto en espera**\\n\\n\" +\n  \"👤 **\" + $json.body.first_name + \" \" + ($json.body.last_name || \"\") + \"**\\n\" +\n  \"🏢 \" + ($json.body.company || \"Sin empresa\") + \"\\n\" +\n  \"💼 \" + ($json.body.job_title || \"Sin cargo\") + \"\\n\\n\" +\n  \"📧 \" + ($json.body.email || \"Sin correo\") + \"\\n\" +\n  \"📞 \" + ($json.body.phone || \"Sin teléfono\") + \"\\n\\n\" +\n  \"⏰ **Seguimiento**\\n\" +\n  (\n    $json.body.next_follow_up_at\n      ? new Date($json.body.next_follow_up_at).toLocaleString(\"es-PA\", {\n          timeZone: \"America/Panama\",\n          day: \"2-digit\",\n          month: \"2-digit\",\n          year: \"numeric\",\n          hour: \"2-digit\",\n          minute: \"2-digit\"\n        })\n      : \"Sin fecha programada\"\n  )\n}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d5506f7b-5432-4b29-a193-713a9ea9fc50",
+      "name": "Enviar a Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        256
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook contacto en espera": {
+      "main": [
+        [
+          {
+            "node": "¿Está en espera?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Está en espera?": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a2199373-4121-4540-9f64-100451563de1",
+  "meta": {
+    "instanceId": "61370bb4b3b5f05e236a62f59b6c9445e891f6badaeeea46b0377416cadbffb4"
+  },
+  "nodeGroups": [],
+  "id": "ANAZOmi6XNHFWK7d",
+  "tags": []
+}
