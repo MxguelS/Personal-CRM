@@ -21,3 +21,4 @@ coverage/
 *.sqlite*
 playwright-report/
 test-results/
+bugs/

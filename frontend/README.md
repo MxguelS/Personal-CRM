@@ -1,54 +1,90 @@
-# Kinfolk Frontend
+# Frontend de Kinfolk
 
-Next.js stable (16.3.4), TypeScript App Router, React 19, and Tailwind CSS 4. System fonts only. No mock data, Next API handlers, or UI component libraries.
+Interfaz de Kinfolk desarrollada con **Next.js 16**, React 19, TypeScript, App Router y Tailwind CSS 4.
 
-## Local Development
+## Desarrollo local
 
-Run from `frontend/` with Node.js 22:
+Todos los comandos se ejecutan desde `frontend/`.
 
-```sh
+Instalar dependencias:
+
+```bash
 npm ci
+```
+
+Iniciar el servidor:
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000. Start the real backend separately on port 8000. The browser always requests relative `/api` URLs; Next rewrites them to the backend.
+La aplicación estará disponible en:
 
-`npm run dev` and `npm start` bind only to `127.0.0.1`. There is no authentication; do not expose this application publicly.
+```text
+http://localhost:3000
+```
 
-`API_INTERNAL_URL` defaults to `http://localhost:8000`. To override it, set it in the shell or `frontend/.env.local` before starting Next. Supply the backend origin, without `/api`. No `NEXT_PUBLIC_*` variable is required.
+El backend debe estar ejecutándose en el puerto `8000`.
 
-## Checks
+Las solicitudes del navegador utilizan rutas relativas `/api` y Next.js las redirige hacia FastAPI.
 
-```sh
+## Variables de entorno
+
+Por defecto, el frontend utiliza:
+
+```text
+API_INTERNAL_URL=http://localhost:8000
+```
+
+Para modificarlo localmente puede utilizarse:
+
+```text
+frontend/.env.local
+```
+
+Dentro de Docker Compose se utiliza:
+
+```text
+API_INTERNAL_URL=http://backend:8000
+```
+
+## Tests y validaciones
+
+```bash
 npm run lint
 npm run typecheck
 npm test
 npm run build
 ```
 
-`npm start` serves a local production build. `npm test` covers the HTTP helper, changed-field payloads, and datetime preservation (including ambiguous DST times) with Node's built-in test runner. These are unit checks, not a substitute for integration testing against the backend.
+## Funciones principales
+
+- Dashboard con métricas y actividad reciente.
+- Gestión de contactos.
+- Búsqueda, filtros y paginación.
+- Detalle de contactos.
+- Historial de interacciones.
+- Seguimientos pendientes, vencidos y próximos.
+- Formularios y diálogos de confirmación.
+- Estados de carga, error y contenido vacío.
+- Diseño adaptable a diferentes tamaños de pantalla.
 
 ## Docker
 
-From the repository root:
+El frontend forma parte del stack principal de Kinfolk:
 
-```sh
-docker build -t personal-crm-frontend --build-arg API_INTERNAL_URL=http://backend:8000 frontend
-docker run --rm -p 127.0.0.1:3000:3000 --network YOUR_COMPOSE_NETWORK personal-crm-frontend
+```bash
+docker compose up --build -d --wait
 ```
 
-The multi-stage image runs standalone Next as a non-root user and listens on `0.0.0.0` inside the container; publish its host port on loopback only. The build argument defaults to `http://backend:8000`; compose should use `frontend/` as the build context and connect this service to the backend network. Rewrites are baked into the production build, so changing only a runtime environment variable does not retarget the proxy. Rebuild with the desired `API_INTERNAL_URL`.
+Next.js escucha internamente en el puerto `3000`.
 
-## Behavior
+Las imágenes de producción utilizan el backend interno:
 
-- Overview: live totals, status breakdown, recent interactions, and upcoming follow-ups.
-- Contacts: debounced search, status filtering, sorting, 20-row pagination, creation, and linked detail pages. Editing and confirmed deletion are on the detail page.
-- Contact detail: all contact fields, notes, follow-up scheduling/clearing, and interaction creation, editing, and confirmed deletion.
-- Both contact data and interaction history reload after every detail mutation, including deletions, so backend-derived timestamps stay authoritative. `last_contacted_at` is never submitted.
-- Edits PATCH only fields changed from the form's initial values; unrelated updates from another tab are not overwritten. Concurrent edits to the same field remain last-write-wins. Unchanged datetime inputs preserve the original timestamp, including seconds and DST offset. Saving an unchanged form sends no mutation request.
-- Follow-ups: paginated today, overdue, and upcoming lists. Buckets use backend UTC days and exclude closed contacts. Display and native datetime inputs use local time; requests submit timezone-aware ISO timestamps.
-- Native dialogs provide modal focus trapping and Escape dismissal. Forms preserve input on failed requests, prevent duplicate submission, and show API error messages. Loading, retry, and empty states are provided throughout.
+```text
+http://backend:8000
+```
 
-## Manual Integration Check
+## Seguridad
 
-With the real backend running, create a contact, search/filter it, edit its details, schedule and clear a follow-up, and check the appropriate UTC bucket. Log two interactions with different times; edit and delete the newest, verifying the contact's derived last-contacted value refreshes. Delete the contact and verify it disappears from contacts and the dashboard. Check keyboard dialog navigation and a mobile viewport. Destructive actions always require confirmation.
+Kinfolk actualmente no implementa autenticación.
