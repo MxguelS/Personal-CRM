@@ -153,9 +153,7 @@ def notify_waiting_contact(contact):
             "job_title": contact.job_title,
             "status": contact.status,
             "next_follow_up_at": (
-                contact.next_follow_up_at.isoformat()
-                if contact.next_follow_up_at
-                else None
+                contact.next_follow_up_at.isoformat() if contact.next_follow_up_at else None
             ),
         }
     ).encode("utf-8")
@@ -174,6 +172,7 @@ def notify_waiting_contact(contact):
             "Could not notify n8n about waiting contact",
             exc_info=True,
         )
+
 
 @app.post("/api/contacts", response_model=s.ContactOut, status_code=201)
 def create_contact(payload: s.ContactCreate, db: DB):
