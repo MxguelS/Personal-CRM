@@ -83,7 +83,7 @@ Alembic administra las migraciones de la base de datos.
 Clona el repositorio y entra al proyecto:
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/MxguelS/Personal-CRM.git
 cd Personal-CRM
 ```
 
