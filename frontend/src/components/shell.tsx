@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/", label: "Overview", icon: "overview" },
-  { href: "/contacts", label: "Contacts", icon: "people" },
-  { href: "/follow-ups", label: "Follow-ups", icon: "calendar" },
+  { href: "/", label: "Inicio", icon: "overview" },
+  { href: "/contacts", label: "Contactos", icon: "people" },
+  { href: "/follow-ups", label: "Seguimientos", icon: "calendar" },
 ];
 
 function NavIcon({ name }: { name: string }) {
@@ -49,7 +49,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <a href="#main" className="skip-link">
-        Skip to content
+        Saltar al contenido
       </a>
       <aside className="sidebar">
         <Link href="/" className="brand">
@@ -57,10 +57,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             k
           </span>
           <span>
-            Kinfolk<span className="brand-caption">Your personal CRM</span>
+            Kinfolk<span className="brand-caption">Tu CRM personal</span>
           </span>
         </Link>
-        <nav aria-label="Main navigation">
+        <nav aria-label="Navegación principal">
           {links.map((link) => {
             const active =
               link.href === "/"
@@ -82,26 +82,26 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="sidebar-note">
           <span className="note-rule" />
           <p>
-            Good relationships
+            Las buenas relaciones
             <br />
-            grow with attention.
+            crecen con atención.
           </p>
-          <span className="muted">A little space to stay in touch.</span>
+          <span className="muted">Un pequeño espacio para mantener el contacto.</span>
         </div>
         <div className="workspace">
           <span className="workspace-dot" />
-          Personal workspace
+          Espacio de trabajo personal
         </div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
-          <span>Keep the connection.</span>
-          <span className="topbar-label">Personal workspace</span>
+          <span>Mantén la conexión.</span>
+          <span className="topbar-label">Espacio de trabajo personal</span>
         </header>
         <main id="main" tabIndex={-1}>
           {children}
         </main>
-        <footer>Made for meaningful connections.</footer>
+        <footer>Hecho para conexiones significativas.</footer>
       </div>
     </div>
   );

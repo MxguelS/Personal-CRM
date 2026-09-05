@@ -50,7 +50,7 @@ test("structured errors preserve the backend message", async () => {
 
 test("non-JSON proxy failures produce an actionable error", async () => {
   globalThis.fetch = async () => new Response("Bad gateway", { status: 502 });
-  await assert.rejects(api("/contacts"), /Request failed \(502\).*try again/);
+  await assert.rejects(api("/contacts"), /La solicitud falló \(502\).*Intenta de nuevo/);
 });
 
 test("empty follow-ups clear to null and local dates round-trip to aware timestamps", () => {

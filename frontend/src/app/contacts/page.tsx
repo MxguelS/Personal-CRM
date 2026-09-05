@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { api, Contact, Page, statuses } from "@/lib/api";
+import { api, Contact, Page, statuses, statusLabel } from "@/lib/api";
 import { useResource } from "@/lib/use-resource";
 import { ContactForm } from "@/components/contact-form";
 import { ContactTable, Empty, LoadState, Pagination } from "@/components/ui";
@@ -38,20 +38,20 @@ function Contacts() {
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">People worth keeping close</p>
-          <h1>Your contacts</h1>
+          <p className="eyebrow">Personas que vale la pena tener cerca</p>
+          <h1>Tus contactos</h1>
           <p className="muted">
-            A familiar face, a fresh introduction. Keep them all in mind.
+            Un rostro conocido, una presentación fresca. Mantenlos a todos en mente.
           </p>
         </div>
         <button className="button" onClick={() => setAdding(true)}>
-          <span aria-hidden="true">+</span> Add contact
+          <span aria-hidden="true">+</span> Agregar contacto
         </button>
       </div>
       <section className="panel">
         <div className="filters">
           <label className="search-field">
-            <span className="sr-only">Search contacts</span>
+            <span className="sr-only">Buscar contactos</span>
             <svg
               aria-hidden="true"
               width="19"
@@ -68,11 +68,11 @@ function Contacts() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search your contacts..."
+              placeholder="Buscar contactos..."
             />
           </label>
           <label className="filter-label">
-            Status
+            Estado
             <select
               value={status}
               onChange={(e) => {
@@ -80,16 +80,16 @@ function Contacts() {
                 setPage(1);
               }}
             >
-              <option value="">All statuses</option>
+              <option value="">Todos los estados</option>
               {statuses.map((s) => (
                 <option key={s} value={s}>
-                  {s[0].toUpperCase() + s.slice(1)}
+                  {statusLabel(s)}
                 </option>
               ))}
             </select>
           </label>
           <label className="filter-label">
-            Sort by
+            Ordenar por
             <select
               value={sort}
               onChange={(e) => {
@@ -97,9 +97,9 @@ function Contacts() {
                 setPage(1);
               }}
             >
-              <option value="updated_at">Recently updated</option>
-              <option value="name">Name</option>
-              <option value="next_follow_up_at">Next follow-up</option>
+              <option value="updated_at">Actualizados recientemente</option>
+              <option value="name">Nombre</option>
+              <option value="next_follow_up_at">Próximo seguimiento</option>
             </select>
           </label>
         </div>
@@ -113,14 +113,14 @@ function Contacts() {
               <Empty
                 title={
                   query || status
-                    ? "No contacts match"
-                    : "Make your first connection"
+                    ? "No hay contactos que coincidan"
+                    : "Haz tu primera conexión"
                 }
               >
                 <p>
                   {query || status
-                    ? "Try another name or choose a different status."
-                    : "Add someone you want to stay in touch with. You can fill in the details later."}
+                    ? "Intenta con otro nombre o elige un estado diferente."
+                    : "Agrega a alguien con quien quieras mantenerte en contacto. Puedes completar los detalles después."}
                 </p>
                 <button
                   className="button secondary"
@@ -132,7 +132,7 @@ function Contacts() {
                     } else setAdding(true);
                   }}
                 >
-                  {query || status ? "Clear filters" : "Add contact"}
+                  {query || status ? "Limpiar filtros" : "Agregar contacto"}
                 </button>
               </Empty>
             )}
@@ -160,7 +160,7 @@ export default function ContactsPage() {
     <Suspense
       fallback={
         <div className="state" role="status">
-          Loading contacts...
+          Cargando contactos...
         </div>
       }
     >

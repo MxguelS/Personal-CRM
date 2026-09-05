@@ -6,6 +6,7 @@ import {
   changedFields,
   Interaction,
   interactionTypes,
+  interactionTypeLabel,
   localDateTime,
   toIso,
 } from "@/lib/api";
@@ -29,7 +30,7 @@ export function InteractionForm({
     const data = new FormData(event.currentTarget);
     const description = String(data.get("description") || "").trim();
     if (!description) {
-      setError("Add a description, not just spaces.");
+      setError("Agrega una descripción, no solo espacios.");
       return;
     }
     setBusy(true);
@@ -62,24 +63,24 @@ export function InteractionForm({
       onSaved();
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "Unable to save interaction.",
+        error instanceof Error ? error.message : "No se pudo guardar la interacción.",
       );
       setBusy(false);
     }
   }
   return (
     <Modal
-      title={interaction ? "Edit interaction" : "Log a conversation"}
+      title={interaction ? "Editar interacción" : "Registrar una conversación"}
       onClose={onClose}
       busy={busy}
     >
       <p className="modal-description">
-        Capture what mattered, while it is still fresh.
+        Captura lo que importó, mientras aún está fresco.
       </p>
       <form onSubmit={submit}>
         <fieldset disabled={busy} className="form-grid">
-          <label>
-            Interaction type
+<label>
+            Tipo de interacción
             <select
               name="type"
               defaultValue={interaction?.type || "call"}
@@ -87,13 +88,13 @@ export function InteractionForm({
             >
               {interactionTypes.map((type) => (
                 <option key={type} value={type}>
-                  {type[0].toUpperCase() + type.slice(1)}
+                  {interactionTypeLabel(type)}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            When <span className="muted">(required)</span>
+            Cuándo <span className="muted">(requerido)</span>
             <input
               name="occurred_at"
               type="datetime-local"
@@ -102,16 +103,16 @@ export function InteractionForm({
                 interaction?.occurred_at || new Date().toISOString(),
               )}
             />
-            <span className="field-hint">Your local time</span>
+            <span className="field-hint">Tu hora local</span>
           </label>
           <label className="full-width">
-            Description <span className="muted">(required)</span>
+            Descripción <span className="muted">(requerida)</span>
             <textarea
               name="description"
               rows={5}
               required
               defaultValue={interaction?.description || ""}
-              placeholder="What did you talk about? What comes next?"
+              placeholder="¿De qué hablaron? ¿Qué sigue?"
             />
           </label>
         </fieldset>
@@ -127,14 +128,14 @@ export function InteractionForm({
             disabled={busy}
             onClick={onClose}
           >
-            Cancel
+            Cancelar
           </button>
           <button className="button" disabled={busy}>
             {busy
-              ? "Saving..."
+              ? "Guardando..."
               : interaction
-                ? "Save changes"
-                : "Log interaction"}
+              ? "Guardar cambios"
+              : "Registrar interacción"}
           </button>
         </div>
       </form>

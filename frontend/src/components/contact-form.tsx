@@ -7,6 +7,7 @@ import {
   Contact,
   localDateTime,
   statuses,
+  statusLabel,
   toIso,
 } from "@/lib/api";
 import { Modal } from "./ui";
@@ -27,7 +28,7 @@ export function ContactForm({
     const form = new FormData(event.currentTarget);
     const text = (key: string) => String(form.get(key) || "").trim();
     if (!text("first_name")) {
-      setError("Enter a first name, not just spaces.");
+      setError("Ingresa un nombre, no solo espacios.");
       return;
     }
     setBusy(true);
@@ -64,26 +65,26 @@ export function ContactForm({
       onSaved(saved);
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "Unable to save contact.",
+        error instanceof Error ? error.message : "No se pudo guardar el contacto.",
       );
       setBusy(false);
     }
   }
   return (
     <Modal
-      title={contact ? "Edit contact" : "A new connection"}
+      title={contact ? "Editar contacto" : "Una nueva conexión"}
       onClose={onClose}
       busy={busy}
     >
       <p className="modal-description">
         {contact
-          ? "Keep their details up to date."
-          : "Start with a name. Add the details as you get to know them."}
+          ? "Mantén sus datos actualizados."
+          : "Empieza con un nombre. Agrega los detalles a medida que lo conozcas."}
       </p>
       <form onSubmit={submit}>
         <fieldset disabled={busy} className="form-grid">
           <label>
-            First name <span className="muted">(required)</span>
+            Nombre <span className="muted">(requerido)</span>
             <input
               name="first_name"
               defaultValue={contact?.first_name}
@@ -93,7 +94,7 @@ export function ContactForm({
             />
           </label>
           <label>
-            Last name
+            Apellido
             <input
               name="last_name"
               defaultValue={contact?.last_name}
@@ -110,7 +111,7 @@ export function ContactForm({
             />
           </label>
           <label>
-            Phone
+            Teléfono
             <input
               name="phone"
               type="tel"
@@ -119,7 +120,7 @@ export function ContactForm({
             />
           </label>
           <label>
-            Company
+            Empresa
             <input
               name="company"
               defaultValue={contact?.company || ""}
@@ -127,7 +128,7 @@ export function ContactForm({
             />
           </label>
           <label>
-            Job title
+            Cargo
             <input
               name="job_title"
               defaultValue={contact?.job_title || ""}
@@ -135,33 +136,33 @@ export function ContactForm({
             />
           </label>
           <label>
-            Status
+            Estado
             <select name="status" defaultValue={contact?.status || "new"}>
               {statuses.map((status) => (
                 <option key={status} value={status}>
-                  {status[0].toUpperCase() + status.slice(1)}
+                  {statusLabel(status)}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Next follow-up
+            Próximo seguimiento
             <input
               name="next_follow_up_at"
               type="datetime-local"
               defaultValue={localDateTime(contact?.next_follow_up_at || null)}
             />
             <span className="field-hint">
-              Your local time. Leave blank to clear.
+              Tu hora local. Deja en blanco para limpiar.
             </span>
           </label>
           <label className="full-width">
-            Notes
+            Notas
             <textarea
               name="notes"
               rows={3}
               defaultValue={contact?.notes || ""}
-              placeholder="Shared interests, useful context, things to remember..."
+              placeholder="Intereses compartidos, contexto útil, cosas para recordar..."
             />
           </label>
         </fieldset>
@@ -177,10 +178,10 @@ export function ContactForm({
             onClick={onClose}
             disabled={busy}
           >
-            Cancel
+            Cancelar
           </button>
           <button className="button" disabled={busy}>
-            {busy ? "Saving..." : contact ? "Save changes" : "Create contact"}
+            {busy ? "Guardando..." : contact ? "Guardar cambios" : "Crear contacto"}
           </button>
         </div>
       </form>

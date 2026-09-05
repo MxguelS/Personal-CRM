@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api, Dashboard, formatDate, fullName, statuses } from "@/lib/api";
+import { api, Dashboard, formatDate, fullName, interactionTypeLabel, statuses } from "@/lib/api";
 import { useResource } from "@/lib/use-resource";
 import { Avatar, Badge, Empty, LoadState } from "@/components/ui";
 import { ContactForm } from "@/components/contact-form";
@@ -19,14 +19,14 @@ export default function Overview() {
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">A little attention goes a long way</p>
-          <h1>Your people, in view.</h1>
+          <p className="eyebrow">Un poco de atención hace la diferencia</p>
+          <h1>Tus personas, a la vista.</h1>
           <p className="muted">
-            Pick up a conversation. Make room for the next one.
+            Retoma una conversación. Haz espacio para la próxima.
           </p>
         </div>
         <button className="button" onClick={() => setAdding(true)}>
-          <span aria-hidden="true">+</span> Add contact
+          <span aria-hidden="true">+</span> Agregar contacto
         </button>
       </div>
       {!data ? (
@@ -35,24 +35,24 @@ export default function Overview() {
         <>
           <div className="stats">
             <Link href="/contacts" className="stat">
-              <span>Total contacts</span>
+              <span>Total de contactos</span>
               <strong>{data.total_contacts}</strong>
-              <span className="stat-caption">Connections in your circle</span>
+              <span className="stat-caption">Conexiones en tu círculo</span>
             </Link>
             <Link href="/follow-ups?bucket=today" className="stat stat-green">
-              <span>Follow-ups today</span>
+              <span>Seguimientos de hoy</span>
               <strong>{data.follow_ups_today}</strong>
-              <span className="stat-caption">A good day to reach out</span>
+              <span className="stat-caption">Un buen día para contactar</span>
             </Link>
             <Link href="/follow-ups?bucket=overdue" className="stat">
-              <span>Overdue follow-ups</span>
+              <span>Seguimientos vencidos</span>
               <strong
                 className={data.overdue_follow_ups > 0 ? "attention" : ""}
               >
                 {data.overdue_follow_ups}
               </strong>
               <span className="stat-caption">
-                Conversations to come back to
+                Conversaciones a las que volver
               </span>
             </Link>
           </div>
@@ -60,11 +60,11 @@ export default function Overview() {
             <section className="panel">
               <div className="panel-heading">
                 <div>
-                  <h2>On the horizon</h2>
-                  <p className="muted">Your next scheduled connections</p>
+                  <h2>En el horizonte</h2>
+                  <p className="muted">Tus próximas conexiones programadas</p>
                 </div>
                 <Link className="text-link" href="/follow-ups?bucket=upcoming">
-                  View all
+                  Ver todos
                 </Link>
               </div>
               {data.upcoming_follow_ups.length ? (
@@ -79,7 +79,7 @@ export default function Overview() {
                       <div className="grow min-w-0">
                         <strong>{fullName(contact)}</strong>
                         <p className="muted truncate">
-                          {contact.company || "Personal connection"}
+                          {contact.company || "Conexión personal"}
                         </p>
                       </div>
                       <span className="followup-date">
@@ -89,13 +89,13 @@ export default function Overview() {
                   ))}
                 </div>
               ) : (
-                <Empty title="A little breathing room">
+                <Empty title="Un respiro">
                   <p>
-                    No upcoming follow-ups. Open a contact to schedule your next
-                    conversation.
+                    No hay seguimientos próximos. Abre un contacto para programar tu
+                    próxima conversación.
                   </p>
                   <Link className="text-link" href="/contacts">
-                    Browse contacts
+                    Ver contactos
                   </Link>
                 </Empty>
               )}
@@ -103,8 +103,8 @@ export default function Overview() {
             <section className="panel status-panel">
               <div className="panel-heading">
                 <div>
-                  <h2>Your circle</h2>
-                  <p className="muted">Where your connections stand</p>
+                  <h2>Tu círculo</h2>
+                  <p className="muted">En qué estado están tus conexiones</p>
                 </div>
               </div>
               <div className="status-list">
@@ -134,9 +134,9 @@ export default function Overview() {
           <section className="panel activity-panel">
             <div className="panel-heading">
               <div>
-                <h2>Recent conversations</h2>
+                <h2>Conversaciones recientes</h2>
                 <p className="muted">
-                  The small moments that keep you connected
+                  Los pequeños momentos que te mantienen conectado
                 </p>
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function Overview() {
                       </p>
                     </div>
                     <div className="recent-meta">
-                      <span className="capitalize">{interaction.type}</span>
+                      <span>{interactionTypeLabel(interaction.type)}</span>
                       <time dateTime={interaction.occurred_at}>
                         {formatDate(interaction.occurred_at, true)}
                       </time>
@@ -170,10 +170,10 @@ export default function Overview() {
                 ))}
               </div>
             ) : (
-              <Empty title="Every connection starts somewhere">
+              <Empty title="Cada conexión empieza en algún lado">
                 <p>
-                  Log a call, email, meeting, or note on a contact. Your recent
-                  activity will appear here.
+                  Registra una llamada, email, reunión o nota en un contacto. Tu
+                  actividad reciente aparecerá aquí.
                 </p>
               </Empty>
             )}

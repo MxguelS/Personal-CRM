@@ -5,14 +5,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: "Kinfolk | Personal CRM", template: "%s | Kinfolk" },
   description:
-    "A thoughtful space to nurture your connections, remember conversations, and follow through.",
+    "Un espacio cuidadoso para cultivar tus conexiones, recordar conversaciones y darles seguimiento.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body>
         <Shell>{children}</Shell>
       </body>

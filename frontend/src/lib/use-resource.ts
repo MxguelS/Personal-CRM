@@ -23,7 +23,7 @@ export function useResource<T>(
         if (!controller.signal.aborted)
           setState({
             error:
-              error instanceof Error ? error.message : "Unable to load data.",
+              error instanceof Error ? error.message : "No se pudieron cargar los datos.",
             key,
           });
       },

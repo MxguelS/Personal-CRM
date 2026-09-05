@@ -10,6 +10,7 @@ import {
   formatDate,
   fullName,
   Interaction,
+  interactionTypeLabel,
   localDateTime,
   toIso,
 } from "@/lib/api";
@@ -66,10 +67,10 @@ export default function ContactPage({
         { method: "DELETE" },
       );
       if (deleting === "contact") router.push("/contacts");
-      else saved("Interaction deleted. Contact activity is up to date.");
+      else saved("Interacción eliminada. La actividad del contacto está actualizada.");
     } catch (error) {
       setMutationError(
-        error instanceof Error ? error.message : "Unable to delete.",
+        error instanceof Error ? error.message : "No se pudo eliminar.",
       );
       setBusy(false);
     }
@@ -89,17 +90,17 @@ export default function ContactPage({
         data?.contact,
       );
       if (!Object.keys(payload).length) {
-        saved("Follow-up unchanged.");
+        saved("Seguimiento sin cambios.");
         return;
       }
       await api(`/contacts/${id}`, {
         method: "PATCH",
         body: JSON.stringify(payload),
       });
-      saved(value ? "Follow-up scheduled." : "Follow-up cleared.");
+      saved(value ? "Seguimiento programado." : "Seguimiento eliminado.");
     } catch (error) {
       setMutationError(
-        error instanceof Error ? error.message : "Unable to update follow-up.",
+        error instanceof Error ? error.message : "No se pudo actualizar el seguimiento.",
       );
       setBusy(false);
     }
@@ -108,7 +109,7 @@ export default function ContactPage({
     return (
       <>
         <Link className="back-link" href="/contacts">
-          &larr; Back to contacts
+          &larr; Volver a contactos
         </Link>
         <LoadState error={error} retry={reload} />
       </>
@@ -117,7 +118,7 @@ export default function ContactPage({
   return (
     <>
       <Link className="back-link" href="/contacts">
-        &larr; All contacts
+        &larr; Todos los contactos
       </Link>
       <div className="detail-heading">
         <div className="person">
@@ -127,7 +128,7 @@ export default function ContactPage({
             <p className="muted">
               {[contact.job_title, contact.company]
                 .filter(Boolean)
-                .join(" at ") || "Personal connection"}
+                .join(" en ") || "Conexión personal"}
             </p>
             <Badge status={contact.status} />
           </div>
@@ -136,7 +137,7 @@ export default function ContactPage({
           className="button secondary"
           onClick={() => setEditContact(true)}
         >
-          Edit contact
+          Editar contacto
         </button>
       </div>
       {notice && (
@@ -144,7 +145,7 @@ export default function ContactPage({
           {notice}
           <button
             className="icon-button"
-            aria-label="Dismiss notification"
+            aria-label="Descartar notificación"
             onClick={() => setNotice("")}
           >
             &#215;
@@ -155,7 +156,7 @@ export default function ContactPage({
         <aside className="detail-sidebar">
           <section className="panel">
             <div className="panel-heading">
-              <h2>Contact details</h2>
+              <h2>Detalles del contacto</h2>
             </div>
             <dl className="contact-info">
               <div>
@@ -164,56 +165,56 @@ export default function ContactPage({
                   {contact.email ? (
                     <a href={`mailto:${contact.email}`}>{contact.email}</a>
                   ) : (
-                    <span className="muted">Not added</span>
+                    <span className="muted">No agregado</span>
                   )}
                 </dd>
               </div>
               <div>
-                <dt>Phone</dt>
+                <dt>Teléfono</dt>
                 <dd>
                   {contact.phone ? (
                     <a href={`tel:${contact.phone}`}>{contact.phone}</a>
                   ) : (
-                    <span className="muted">Not added</span>
+                    <span className="muted">No agregado</span>
                   )}
                 </dd>
               </div>
               <div>
-                <dt>Company</dt>
+                <dt>Empresa</dt>
                 <dd>
-                  {contact.company || <span className="muted">Not added</span>}
+                  {contact.company || <span className="muted">No agregado</span>}
                 </dd>
               </div>
               <div>
-                <dt>Last contacted</dt>
+                <dt>Último contacto</dt>
                 <dd>
                   {contact.last_contacted_at ? (
                     formatDate(contact.last_contacted_at, true)
                   ) : (
-                    <span className="muted">No contact recorded</span>
+                    <span className="muted">Sin contacto registrado</span>
                   )}
                 </dd>
               </div>
               <div>
-                <dt>Added</dt>
+                <dt>Agregado</dt>
                 <dd>{formatDate(contact.created_at)}</dd>
               </div>
             </dl>
           </section>
           <section className="followup-card">
             <div className="flex items-center justify-between gap-3">
-              <h2>Next follow-up</h2>
+              <h2>Próximo seguimiento</h2>
               <span aria-hidden="true">&#8599;</span>
             </div>
             <p className="scheduled-date">
               {contact.next_follow_up_at
                 ? formatDate(contact.next_follow_up_at, true)
-                : "Make time to reconnect."}
+                : "Haz tiempo para reconectar."}
             </p>
             <p>
               {contact.status === "closed"
-                ? "This contact is closed and will not appear in follow-up lists."
-                : "A small reminder to keep the conversation going."}
+                ? "Este contacto está cerrado y no aparecerá en las listas de seguimiento."
+                : "Un pequeño recordatorio para mantener la conversación en marcha."}
             </p>
             <button
               className="button followup-button"
@@ -223,8 +224,8 @@ export default function ContactPage({
               }}
             >
               {contact.next_follow_up_at
-                ? "Reschedule or clear"
-                : "Schedule follow-up"}
+                ? "Reprogramar o eliminar"
+                : "Programar seguimiento"}
             </button>
           </section>
           <button
@@ -234,39 +235,39 @@ export default function ContactPage({
               setDeleting("contact");
             }}
           >
-            Delete contact
+            Eliminar contacto
           </button>
         </aside>
         <div className="detail-content">
           <section className="panel notes-panel">
             <div className="panel-heading">
-              <h2>Things to remember</h2>
+              <h2>Cosas para recordar</h2>
               <button
                 className="text-link"
                 onClick={() => setEditContact(true)}
               >
-                Edit notes
+                Editar notas
               </button>
             </div>
             <p className={`notes-text ${contact.notes ? "" : "muted"}`}>
               {contact.notes ||
-                "A shared interest, a recent milestone, their usual coffee order. Keep the little things here."}
+                "Un interés compartido, un hito reciente, su pedido de café habitual. Guarda los pequeños detalles aquí."}
             </p>
           </section>
           <section className="panel">
             <div className="panel-heading">
               <div>
                 <h2>
-                  Conversation history{" "}
+                  Historial de conversaciones{" "}
                   <span className="count">{interactions.length}</span>
                 </h2>
-                <p className="muted">Every touchpoint, in one place</p>
+                <p className="muted">Cada punto de contacto, en un solo lugar</p>
               </div>
               <button
                 className="button small"
                 onClick={() => setInteraction("new")}
               >
-                + Log interaction
+                + Registrar interacción
               </button>
             </div>
             {interactions.length ? (
@@ -281,7 +282,7 @@ export default function ContactPage({
                     </span>
                     <article>
                       <div className="timeline-heading">
-                        <h3 className="capitalize">{item.type}</h3>
+                        <h3>{interactionTypeLabel(item.type)}</h3>
                         <time dateTime={item.occurred_at}>
                           {formatDate(item.occurred_at, true)}
                         </time>
@@ -293,9 +294,9 @@ export default function ContactPage({
                         <button
                           className="text-link"
                           onClick={() => setInteraction(item)}
-                          aria-label={`Edit ${item.type} from ${formatDate(item.occurred_at, true)}`}
+                          aria-label={`Editar ${interactionTypeLabel(item.type).toLowerCase()} del ${formatDate(item.occurred_at, true)}`}
                         >
-                          Edit
+                          Editar
                         </button>
                         <button
                           className="text-link danger-text"
@@ -303,9 +304,9 @@ export default function ContactPage({
                             setMutationError("");
                             setDeleting(item);
                           }}
-                          aria-label={`Delete ${item.type} from ${formatDate(item.occurred_at, true)}`}
+                          aria-label={`Eliminar ${interactionTypeLabel(item.type).toLowerCase()} del ${formatDate(item.occurred_at, true)}`}
                         >
-                          Delete
+                          Eliminar
                         </button>
                       </div>
                     </article>
@@ -313,16 +314,16 @@ export default function ContactPage({
                 ))}
               </ol>
             ) : (
-              <Empty title="The conversation starts here">
+              <Empty title="La conversación empieza aquí">
                 <p>
-                  Log a call, an email, a meeting, or a note. Give your next
-                  conversation a little context.
+                  Registra una llamada, un email, una reunión o una nota. Dale a tu próxima
+                  conversación un poco de contexto.
                 </p>
                 <button
                   className="button secondary"
                   onClick={() => setInteraction("new")}
                 >
-                  Log first interaction
+                  Registrar primera interacción
                 </button>
               </Empty>
             )}
@@ -333,7 +334,7 @@ export default function ContactPage({
         <ContactForm
           contact={contact}
           onClose={() => setEditContact(false)}
-          onSaved={() => saved("Contact updated.")}
+          onSaved={() => saved("Contacto actualizado.")}
         />
       )}
       {interaction && (
@@ -342,19 +343,19 @@ export default function ContactPage({
           interaction={interaction === "new" ? undefined : interaction}
           onClose={() => setInteraction(null)}
           onSaved={() =>
-            saved("Interaction saved. Contact activity is up to date.")
+            saved("Interacción guardada. La actividad del contacto está actualizada.")
           }
         />
       )}
       {scheduling && (
         <Modal
-          title="Plan your next conversation"
+          title="Planifica tu próxima conversación"
           onClose={() => setScheduling(false)}
           busy={busy}
         >
           <form onSubmit={schedule}>
             <label className="schedule-label">
-              Next follow-up
+              Próximo seguimiento
               <input
                 type="datetime-local"
                 name="next_follow_up_at"
@@ -363,7 +364,7 @@ export default function ContactPage({
                 autoFocus
               />
               <span className="field-hint">
-                Your local time. Leave blank to remove the follow-up.
+                Tu hora local. Deja en blanco para quitar el seguimiento.
               </span>
             </label>
             {mutationError && (
@@ -378,10 +379,10 @@ export default function ContactPage({
                 disabled={busy}
                 onClick={() => setScheduling(false)}
               >
-                Cancel
+                Cancelar
               </button>
               <button className="button" disabled={busy}>
-                {busy ? "Saving..." : "Save follow-up"}
+                {busy ? "Guardando..." : "Guardar seguimiento"}
               </button>
             </div>
           </form>
@@ -391,17 +392,17 @@ export default function ContactPage({
         <Modal
           title={
             deleting === "contact"
-              ? "Delete this contact?"
-              : "Delete this interaction?"
+              ? "¿Eliminar este contacto?"
+              : "¿Eliminar esta interacción?"
           }
           onClose={() => setDeleting(null)}
           busy={busy}
         >
           <p className="modal-description">
             {deleting === "contact"
-              ? `${fullName(contact)} and their conversation history will be permanently deleted.`
-              : "This interaction will be permanently removed. The contact's last-contacted time will be recalculated."}{" "}
-            This cannot be undone.
+              ? `${fullName(contact)} y su historial de conversaciones se eliminarán permanentemente.`
+              : "Esta interacción se eliminará permanentemente. El último contacto del contacto se recalculará."}{" "}
+            Esta acción no se puede deshacer.
           </p>
           {mutationError && (
             <p className="form-error" role="alert">
@@ -415,12 +416,12 @@ export default function ContactPage({
               disabled={busy}
               autoFocus
             >
-              Keep {deleting === "contact" ? "contact" : "interaction"}
+              Conservar {deleting === "contact" ? "contacto" : "interacción"}
             </button>
             <button className="button danger" disabled={busy} onClick={remove}>
               {busy
-                ? "Deleting..."
-                : `Delete ${deleting === "contact" ? "contact" : "interaction"}`}
+                ? "Eliminando..."
+                : `Eliminar ${deleting === "contact" ? "contacto" : "interacción"}`}
             </button>
           </div>
         </Modal>

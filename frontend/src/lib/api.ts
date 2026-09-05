@@ -52,7 +52,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
     const body = await response.json().catch(() => null);
     throw new Error(
       body?.error?.message ||
-        `Request failed (${response.status}). Please try again.`,
+        `La solicitud falló (${response.status}). Intenta de nuevo.`,
     );
   }
   if (response.status === 204) return undefined as T;
@@ -64,13 +64,33 @@ export function fullName(contact: Pick<Contact, "first_name" | "last_name">) {
 }
 
 export function formatDate(value: string | null, time = false) {
-  if (!value) return "Not set";
+  if (!value) return "No establecido";
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
     ...(time ? ({ hour: "numeric", minute: "2-digit" } as const) : {}),
   }).format(new Date(value));
+}
+
+export function statusLabel(status: Status): string {
+  const labels: Record<Status, string> = {
+    new: "Nuevo",
+    contacted: "Contactado",
+    waiting: "En espera",
+    closed: "Cerrado",
+  };
+  return labels[status];
+}
+
+export function interactionTypeLabel(type: (typeof interactionTypes)[number]): string {
+  const labels: Record<(typeof interactionTypes)[number], string> = {
+    call: "Llamada",
+    email: "Email",
+    meeting: "Reunión",
+    note: "Nota",
+  };
+  return labels[type];
 }
 
 export function localDateTime(value: string | null) {

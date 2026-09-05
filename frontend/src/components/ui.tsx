@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { Contact, formatDate, fullName, Status } from "@/lib/api";
+import { Contact, formatDate, fullName, Status, statusLabel } from "@/lib/api";
 
 export function Badge({ status }: { status: Status }) {
   return (
     <span className={`badge badge-${status}`}>
       <span aria-hidden="true" />
-      {status}
+      {statusLabel(status)}
     </span>
   );
 }
@@ -40,16 +40,16 @@ export function LoadState({
 }) {
   return error ? (
     <div className="state error" role="alert">
-      <h3>Could not load this view</h3>
+      <h3>No se pudo cargar esta vista</h3>
       <p>{error}</p>
       <button className="button secondary" onClick={retry}>
-        Try again
+        Intentar de nuevo
       </button>
     </div>
   ) : (
     <div className="state" role="status">
       <span className="loading-dot" />
-      Loading your workspace...
+      Cargando tu espacio de trabajo...
     </div>
   );
 }
@@ -107,7 +107,7 @@ export function Modal({
           className="icon-button"
           onClick={onClose}
           disabled={busy}
-          aria-label="Close dialog"
+          aria-label="Cerrar diálogo"
         >
           &#215;
         </button>
@@ -123,12 +123,12 @@ export function ContactTable({ contacts }: { contacts: Contact[] }) {
       <table>
         <thead>
           <tr>
-            <th scope="col">Contact</th>
-            <th scope="col">Status</th>
-            <th scope="col">Last contacted</th>
-            <th scope="col">Next follow-up</th>
+            <th scope="col">Contacto</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Último contacto</th>
+            <th scope="col">Próximo seguimiento</th>
             <th scope="col">
-              <span className="sr-only">Open</span>
+              <span className="sr-only">Abrir</span>
             </th>
           </tr>
         </thead>
@@ -143,9 +143,9 @@ export function ContactTable({ contacts }: { contacts: Contact[] }) {
                     <span className="muted person-meta">
                       {[contact.job_title, contact.company]
                         .filter(Boolean)
-                        .join(" at ") ||
+                        .join(" en ") ||
                         contact.email ||
-                        "No company added"}
+                        "Sin empresa agregada"}
                     </span>
                   </span>
                 </Link>
@@ -157,23 +157,23 @@ export function ContactTable({ contacts }: { contacts: Contact[] }) {
                 {contact.last_contacted_at ? (
                   formatDate(contact.last_contacted_at)
                 ) : (
-                  <span className="muted">No activity yet</span>
+                  <span className="muted">Sin actividad aún</span>
                 )}
               </td>
               <td className="date-cell">
                 {contact.next_follow_up_at ? (
                   formatDate(contact.next_follow_up_at, true)
                 ) : (
-                  <span className="muted">Not scheduled</span>
+                  <span className="muted">No programado</span>
                 )}
               </td>
               <td>
                 <Link
                   className="text-link"
                   href={`/contacts/${contact.id}`}
-                  aria-label={`View ${fullName(contact)}`}
+                  aria-label={`Ver ${fullName(contact)}`}
                 >
-                  View
+                  Ver
                 </Link>
               </td>
             </tr>
@@ -200,8 +200,8 @@ export function Pagination({
     <div className="pagination">
       <span className="muted">
         {total === 0
-          ? "0 contacts"
-          : `${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, total)} of ${total} contacts`}
+          ? "0 contactos"
+          : `${(page - 1) * pageSize + 1}-${Math.min(page * pageSize, total)} de ${total} contactos`}
       </span>
       <div className="flex items-center gap-3">
         <button
@@ -209,17 +209,17 @@ export function Pagination({
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
         >
-          Previous
+          Anterior
         </button>
         <span className="page-number">
-          Page {page} of {pages}
+          Página {page} de {pages}
         </span>
         <button
           className="button secondary small"
           disabled={page >= pages}
           onClick={() => onChange(page + 1)}
         >
-          Next
+          Siguiente
         </button>
       </div>
     </div>

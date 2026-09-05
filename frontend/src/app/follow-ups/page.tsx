@@ -26,18 +26,18 @@ function FollowUps() {
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">A reason to reconnect</p>
-          <h1>Follow through.</h1>
+          <p className="eyebrow">Una razón para reconectar</p>
+          <h1>Da el siguiente paso.</h1>
           <p className="muted">
-            Turn good intentions into your next conversation.
+            Convierte las buenas intenciones en tu próxima conversación.
           </p>
         </div>
         <Link href="/contacts" className="button secondary">
-          Browse contacts
+          Ver contactos
         </Link>
       </div>
       <section className="panel">
-        <div className="tabs" aria-label="Follow-up period">
+        <div className="tabs" aria-label="Período de seguimiento">
           {buckets.map((value) => (
             <button
               key={value}
@@ -53,8 +53,8 @@ function FollowUps() {
           ))}
         </div>
         <p className="bucket-note">
-          Grouped by UTC day. Times are shown in your local timezone. Closed
-          contacts are excluded.
+          Agrupados por día UTC. Las horas se muestran en tu zona horaria local. Los
+          contactos cerrados se excluyen.
         </p>
         {!data ? (
           <LoadState error={error} retry={reload} />
@@ -66,15 +66,15 @@ function FollowUps() {
               <Empty
                 title={
                   bucket === "overdue"
-                    ? "All caught up"
+                    ? "Todo al día"
                     : bucket === "today"
-                      ? "Nothing scheduled for today"
-                      : "Your calendar is open"
+                    ? "Nada programado para hoy"
+                    : "Tu calendario está libre"
                 }
               >
-                <p>Open a contact to schedule or update a follow-up.</p>
+                <p>Abre un contacto para programar o actualizar un seguimiento.</p>
                 <Link href="/contacts" className="text-link">
-                  Find someone to connect with
+                  Encuentra a alguien con quien conectar
                 </Link>
               </Empty>
             )}
@@ -96,7 +96,7 @@ export default function FollowUpsPage() {
     <Suspense
       fallback={
         <div className="state" role="status">
-          Loading follow-ups...
+          Cargando seguimientos...
         </div>
       }
     >
