@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "./theme-toggle";
 
 const links = [
   { href: "/", label: "Inicio", icon: "overview" },
@@ -96,7 +97,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <div className="main-shell">
         <header className="topbar">
           <span>Mantén la conexión.</span>
-          <span className="topbar-label">Espacio de trabajo personal</span>
+          <div className="topbar-actions">
+            <ThemeToggle />
+            <span className="topbar-label">Espacio de trabajo personal</span>
+          </div>
         </header>
         <main id="main" tabIndex={-1}>
           {children}
