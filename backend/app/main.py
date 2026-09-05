@@ -1,4 +1,6 @@
+import json
 import logging
+import urllib.request
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Literal
 
@@ -134,12 +136,54 @@ def list_contacts(
     return paginate(db, query.order_by(*ordering[sort]), page, page_size)
 
 
+def notify_waiting_contact(contact):
+    if contact.status != "waiting":
+        return
+
+    webhook_url = settings.n8n_waiting_contact_webhook_url
+
+    data = json.dumps(
+        {
+            "id": contact.id,
+            "first_name": contact.first_name,
+            "last_name": contact.last_name,
+            "email": contact.email,
+            "phone": contact.phone,
+            "company": contact.company,
+            "job_title": contact.job_title,
+            "status": contact.status,
+            "next_follow_up_at": (
+                contact.next_follow_up_at.isoformat()
+                if contact.next_follow_up_at
+                else None
+            ),
+        }
+    ).encode("utf-8")
+
+    request = urllib.request.Request(
+        webhook_url,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
+    try:
+        urllib.request.urlopen(request, timeout=3)
+    except Exception:
+        logging.getLogger(__name__).warning(
+            "Could not notify n8n about waiting contact",
+            exc_info=True,
+        )
+
 @app.post("/api/contacts", response_model=s.ContactOut, status_code=201)
 def create_contact(payload: s.ContactCreate, db: DB):
     contact = Contact(**payload.model_dump())
     db.add(contact)
     db.commit()
     db.refresh(contact)
+
+    notify_waiting_contact(contact)
+
     return contact
 
 

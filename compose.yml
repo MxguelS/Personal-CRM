@@ -7,6 +7,7 @@ x-backend: &backend
   environment:
     DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-crm}:${POSTGRES_PASSWORD:-crm}@postgres:5432/${POSTGRES_DB:-crm}
     CORS_ORIGINS: '${CORS_ORIGINS:-["http://localhost:3000"]}'
+    N8N_WAITING_CONTACT_WEBHOOK_URL: ${N8N_WAITING_CONTACT_WEBHOOK_URL:-http://n8n:5678/webhook/crm-contacto-espera}
 
 services:
   postgres:
@@ -68,5 +69,29 @@ services:
       start_period: 15s
     restart: unless-stopped
 
+  n8n:
+    image: n8nio/n8n:latest
+
+    ports:
+      - "127.0.0.1:${N8N_PORT:-5678}:5678"
+
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_SECURE_COOKIE: "false"
+      GENERIC_TIMEZONE: America/Panama
+      TZ: America/Panama
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  n8n_data:
