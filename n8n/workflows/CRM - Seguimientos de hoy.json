@@ -47,7 +47,7 @@
             {
               "id": "f6272ac0-af91-431c-96d1-f49d1a67cdb6",
               "leftValue": "={{$json.total}}",
-              "rightValue": "=",
+              "rightValue": 0,
               "operator": {
                 "type": "number",
                 "operation": "gt"
