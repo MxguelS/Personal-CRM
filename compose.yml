@@ -70,11 +70,11 @@ services:
     restart: unless-stopped
 
   n8n:
-    image: n8nio/n8n:latest
-
+    image: personal-crm-n8n:local
+    build:
+      context: ./n8n
     ports:
       - "127.0.0.1:${N8N_PORT:-5678}:5678"
-
     environment:
       N8N_HOST: localhost
       N8N_PORT: 5678
@@ -82,14 +82,11 @@ services:
       N8N_SECURE_COOKIE: "false"
       GENERIC_TIMEZONE: America/Panama
       TZ: America/Panama
-
     volumes:
       - n8n_data:/home/node/.n8n
-
     depends_on:
       backend:
         condition: service_healthy
-
     restart: unless-stopped
 
 volumes:
